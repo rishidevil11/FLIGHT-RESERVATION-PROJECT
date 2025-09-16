@@ -4,6 +4,7 @@ from tkinter import font
 import requests
 import webbrowser
 
+
 def book_flight(flight_number):
     # Open the respective flight's website
     url = f"https://www.google.com/travel/flights"
@@ -178,3 +179,4 @@ credentials = {}
 
 # Start the Tkinter event loop
 login_window.mainloop()
+
