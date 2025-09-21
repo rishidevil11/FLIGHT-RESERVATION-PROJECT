@@ -1,8 +1,10 @@
 import tkinter as tk
 from tkinter import messagebox
-from tkinter import font
 import requests
 import webbrowser
+from tkinter import ttk
+import tkinter.font as tkFont
+
 
 def book_flight(flight_number):
     # Open the respective flight's website
@@ -10,6 +12,7 @@ def book_flight(flight_number):
     webbrowser.open(url)
 
 def search_flights():
+    from tkinter import font
     departure = departure_entry.get()
     arrival = arrival_entry.get()
 
@@ -48,7 +51,7 @@ def search_flights():
                 canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
                 inner_frame = tk.Frame(canvas, bg="white")
-                canvas.create_window((0, 0), window=inner_frame, anchor=tk.NW)
+                canvas.create_window((940,240), window=inner_frame, anchor=tk.CENTER)
 
                 for flight in data["data"]:
                     flight_number = flight["flight"]["iata"]
@@ -107,74 +110,91 @@ def clear_login_fields():
     password_entry.delete(0, tk.END)
 
 def show_home_screen():
-    login_window.withdraw()
-
+    login_window.destroy()
     global home_window
     home_window = tk.Tk()
-    home_window.title("Flight Booking")
     home_window.geometry("1920x1080")
+    home_window.resizable(False,False)
     home_window.configure(bg="white")
+    home_window.title("Flight Booking")
 
-    title_font = font.Font(family="Helvetica", size=24, weight="bold")
-    label_font = font.Font(family="Helvetica", size=16)
-    button_font = font.Font(family="Helvetica", size=16, weight="bold")
+    canvas=tk.Canvas(home_window, width=600, height=600, bg="#f4f4f4")
+    canvas.pack(anchor=tk.CENTER,expand=True)
 
-    title_label = tk.Label(home_window, text="Flight Booking", font=title_font, fg="black", bg="white")
-    title_label.pack(pady=20)
+    canvas.create_text((270,50),text="Book your flight",font=("Helvetica", 20,"bold"))
 
     global departure_entry
-    departure_label = tk.Label(home_window, text="Departure Airport:", font=label_font, fg="black", bg="white")
-    departure_label.pack()
-
-    departure_entry = tk.Entry(home_window, font=label_font, bg="white", fg="black", width=15)
-    departure_entry.pack()
+    canvas.create_text((110,100),text="Departure Airport",font=("Helvetica", 20,))
+    departure_entry=ttk.Entry(home_window,width=30,font=('Helvetica',25))
+    canvas.create_window(300,170,window=departure_entry)
 
     global arrival_entry
-    arrival_label = tk.Label(home_window, text="Arrival Airport:", font=label_font, fg="black", bg="white")
-    arrival_label.pack()
+    canvas.create_text((90,245),text="Arrival Airport",font=("Helvetica", 20,))
+    arrival_entry=ttk.Entry(home_window,width=30,font=('Helvetica',25))
+    canvas.create_window(300,290,window=arrival_entry)
 
-    arrival_entry = tk.Entry(home_window, font=label_font, bg="white", fg="black", width=15)
-    arrival_entry.pack()
+    font = tkFont.Font(size=14, weight="bold")
+    style = ttk.Style()
+    style.configure("Custom.TButton", font=font, padding=10)
 
-    search_button = tk.Button(home_window, text="Search Flights", font=button_font, bg="gray", fg="black", command=search_flights)
-    search_button.pack(pady=10)
+    search_button = ttk.Button(
+        home_window,
+        text="Search",
+        width=40,
+        command=search_flights,
+        style="Custom.TButton"
+    )
 
-    # Start the Tkinter event loop
+    canvas.create_window(300, 370, window=search_button)
+
     home_window.mainloop()
 
-# Create the login window
+
 login_window = tk.Tk()
-login_window.title("Login")
 login_window.geometry("1920x1080")
+login_window.resizable(False,False)
 login_window.configure(bg="white")
+login_window.title("Login/Register")
 
-title_font = font.Font(family="Helvetica", size=24, weight="bold")
-label_font = font.Font(family="Helvetica", size=16)
-button_font = font.Font(family="Helvetica", size=16, weight="bold")
+canvas=tk.Canvas(login_window, width=600, height=600, bg="#f4f4f4")
+canvas.pack(anchor=tk.CENTER,expand=True)
 
-title_label = tk.Label(login_window, text="Login", font=title_font, fg="black", bg="white")
-title_label.pack(pady=20)
+canvas.create_text((220,50),text="Login/Register into your account:",font=("Helvetica", 20,"bold"))
 
-username_label = tk.Label(login_window, text="Username:", font=label_font, fg="black", bg="white")
-username_label.pack()
+canvas.create_text((75,100),text="Username:",font=("Helvetica", 20,))
+username_entry=ttk.Entry(login_window,width=30,font=('Helvetica',25))
+canvas.create_window(300,170,window=username_entry)
 
-username_entry = tk.Entry(login_window, font=label_font, bg="white", fg="black", width=15)
-username_entry.pack()
+canvas.create_text((75,245),text="Password:",font=("Helvetica", 20,))
+password_entry=ttk.Entry(login_window,width=30,font=('Helvetica',25),show="*")
+canvas.create_window(300,290,window=password_entry)
 
-password_label = tk.Label(login_window, text="Password:", font=label_font, fg="black", bg="white")
-password_label.pack()
+font = tkFont.Font(size=14, weight="bold")
+style = ttk.Style()
+style.configure("Custom.TButton", font=font, padding=10)
 
-password_entry = tk.Entry(login_window, font=label_font, bg="white", fg="black", width=15, show="*")
-password_entry.pack()
+login_button = ttk.Button(
+    login_window,
+    text="Login",
+    width=40,
+    command=login,
+    style="Custom.TButton"
+)
 
-login_button = tk.Button(login_window, text="Login", font=button_font, bg="gray", fg="black", command=login)
-login_button.pack(pady=10)
 
-register_button = tk.Button(login_window, text="Register", font=button_font, bg="gray", fg="black", command=register)
-register_button.pack()
+canvas.create_window(300, 370, window=login_button)
 
-# Create a dictionary to store user credentials
+register_button = ttk.Button(
+    login_window,
+    text="Register",
+    width=40,
+    command=register,
+    style="Custom.TButton"
+)
+canvas.create_window(300, 460, window=register_button)
+
 credentials = {}
 
-# Start the Tkinter event loop
+
 login_window.mainloop()
+
